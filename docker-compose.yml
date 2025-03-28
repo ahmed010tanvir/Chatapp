@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:5.0
+    container_name: mongodb
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-db:/data/db
+    networks:
+      - app-network
+
+  boot-app:
+    build:
+      context: ./chat-app-backend
+      dockerfile: Dockerfile
+    image: gin0007/chatapp:latest
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/Chatapp
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  react-service:
+    image: gin0007/chatapp
+    build:
+      context: ./chat-app-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    networks:
+      - app-network
+    depends_on:
+      - boot-app
+
+volumes:
+  mongo-db:
+
+networks:
+  app-network:
+    driver: bridge

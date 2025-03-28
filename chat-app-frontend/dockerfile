@@ -1,0 +1,32 @@
+# Use an official Node.js image as the base
+FROM node:20 as build
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+
+
+FROM nginx:stable-alpine
+COPY --from=build /app/dist/ /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+# Copy the rest of the frontend source code
+COPY . .
+
+# Build the React app
+
+
+# Install and run a simple HTTP server to serve the React app
+
+
+# Expose the port for the frontend
+
+
+
